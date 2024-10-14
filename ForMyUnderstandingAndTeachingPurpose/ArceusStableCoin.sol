@@ -33,10 +33,10 @@
  *
  * This is the contract meant to be governed by DSCEngine. This contract is just the ERC20 implementation of our stablecoin system.
  */
-pragma solidity ^0.8.18;
+pragma solidity 0.8.19;
 
-import {ERC20Burnable, ERC20} from "@openzeppelin/openzeppelin-contracts/token/ERC20/extensions/ERC20Burnable.sol"; //ERC20Burnable includes `burn` functionality for our tokens which will be important when we need to take the asset out of circulation to support stability.
-import {Ownable} from "@openzeppelin/openzeppelin-contracts/access/Ownable.sol"; //Ownable: This contract adds an ownership structure, where only the owner of the contract (typically the person who deployed it) can perform certain actions.
+//import {ERC20Burnable, ERC20} from "@openzeppelin/openzeppelin-contracts/token/ERC20/extensions/ERC20Burnable.sol"; //ERC20Burnable includes `burn` functionality for our tokens which will be important when we need to take the asset out of circulation to support stability.
+//import {Ownable} from "@openzeppelin/openzeppelin-contracts/access/Ownable.sol"; //Ownable: This contract adds an ownership structure, where only the owner of the contract (typically the person who deployed it) can perform certain actions.
 
 /*
 The ArceusStableCoin contract inherits from two base contracts:
@@ -52,7 +52,7 @@ contract ArceusStableCoin is
     error ArceusStableCoin__BurnAmountExceedsBalance(); //Thrown when the user tries to burn more tokens than they currently own.
     error ArceusStableCoin__NotZeroAddress(); // Thrown when the destination address for minting tokens is the zero address. The zero address (0x0000000000000000000000000000000000000000) is an invalid address and cannot be used in this context.
 
-    constructor () ERC20 ("ArceusStableCoin", "ARC") {}
+    constructor() ERC20("ArceusStableCoin", "ARC") {}
 
     /*
     Purpose of Constructor: The constructor is called once when the contract is deployed. 
@@ -75,7 +75,10 @@ contract ArceusStableCoin is
         super.burn(_amount); //Burning: If both conditions pass, the super.burn(_amount) function is called to burn the specified amount of tokens using the ERC20Burnable functionality.
     } //Why Burn Tokens?: Burning tokens reduces the total supply, which can help maintain or increase the value of the token in circulation. In stablecoins, burning is often part of a mechanism to maintain price stability by controlling supply.
 
-    function mint(address _to, uint256 _amount) external onlyOwner returns (bool) {
+    function mint(
+        address _to,
+        uint256 _amount
+    ) external onlyOwner returns (bool) {
         //Purpose: This function allows the contract owner to mint (create) new tokens. Minting tokens adds them to circulation by increasing the supply.
         if (_to == address(0)) {
             //Check address: The _to address (the recipient of the newly minted tokens) must not be the zero address. Minting tokens to the zero address would effectively burn them, which is not allowed.
