@@ -49,7 +49,6 @@ import { DecentralizedStableCoin } from "./DecentralizedStableCoin.sol";
  * @notice This contract is based on the MakerDAO DSS system
  */
 contract DSCEngine is ReentrancyGuard {
-
     // Errors
 
     error DSCEngine__TokenAddressesAndPriceFeedAddressesAmountsDontMatch();
@@ -61,11 +60,9 @@ contract DSCEngine is ReentrancyGuard {
     error DSCEngine__HealthFactorOk();
     error DSCEngine__HealthFactorNotImproved();
 
-
     // Types
 
     using OracleLib for AggregatorV3Interface;
-
 
     // State Variables
 
@@ -88,16 +85,14 @@ contract DSCEngine is ReentrancyGuard {
     /// @dev If we know exactly how many tokens we have, we could make this immutable!
     address[] private s_collateralTokens;
 
-
     // Events
-    
+
     event CollateralDeposited(address indexed user, address indexed token, uint256 indexed amount);
     event CollateralRedeemed(address indexed redeemFrom, address indexed redeemTo, address token, uint256 amount); // if
         // redeemFrom != redeemedTo, then it was liquidated
 
-    
     // Modifiers
-    
+
     modifier moreThanZero(uint256 amount) {
         if (amount == 0) {
             revert DSCEngine__NeedsMoreThanZero();
@@ -112,9 +107,8 @@ contract DSCEngine is ReentrancyGuard {
         _;
     }
 
-    
     // Functions
-    
+
     constructor(address[] memory tokenAddresses, address[] memory priceFeedAddresses, address dscAddress) {
         if (tokenAddresses.length != priceFeedAddresses.length) {
             revert DSCEngine__TokenAddressesAndPriceFeedAddressesAmountsDontMatch();
@@ -128,9 +122,8 @@ contract DSCEngine is ReentrancyGuard {
         i_dsc = DecentralizedStableCoin(dscAddress);
     }
 
-    
     // External Functions
-    
+
     /*
      * @param tokenCollateralAddress: The ERC20 token address of the collateral you're depositing
      * @param amountCollateral: The amount of collateral you're depositing
@@ -245,9 +238,8 @@ contract DSCEngine is ReentrancyGuard {
         revertIfHealthFactorIsBroken(msg.sender);
     }
 
-    
     // Public Functions
-    
+
     /*
      * @param amountDscToMint: The amount of DSC you want to mint
      * You can only mint DSC if you hav enough collateral
@@ -283,9 +275,8 @@ contract DSCEngine is ReentrancyGuard {
         }
     }
 
-    
     // Private Functions
-    
+
     function _redeemCollateral(
         address tokenCollateralAddress,
         uint256 amountCollateral,
@@ -313,9 +304,7 @@ contract DSCEngine is ReentrancyGuard {
         i_dsc.burn(amountDscToBurn);
     }
 
-   
     // Private & Internal View & Pure Functions
-    
 
     function _getAccountInformation(address user)
         private
@@ -361,9 +350,8 @@ contract DSCEngine is ReentrancyGuard {
         }
     }
 
-    
     // External & Public View & Pure Functions
-    
+
     function calculateHealthFactor(
         uint256 totalDscMinted,
         uint256 collateralValueInUsd
